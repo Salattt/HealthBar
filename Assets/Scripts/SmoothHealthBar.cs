@@ -3,9 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Slider))]
-public class SmoothHealthBar : MonoBehaviour
+public class SmoothHealthBar : HeatlthView
 {
-    [SerializeField] private Health _health;
     [SerializeField] private float _sliderSpeed;
 
     private Slider _slider;
@@ -15,24 +14,6 @@ public class SmoothHealthBar : MonoBehaviour
     private void Awake()
     {
         _slider = GetComponent<Slider>();
-    }
-
-    private void OnEnable()
-    {
-        _health.HealthChanged += OnHealthChanged;
-    }
-
-    private void OnDisable()
-    {
-        _health.HealthChanged -= OnHealthChanged;
-    }
-
-    protected void OnHealthChanged()
-    {
-        if (_isValueChanging)
-            StopCoroutine(_valueChanger);
-
-        _valueChanger = StartCoroutine(ChangeValue(_health.CurrentHealth / _health.MaxHealth));
     }
 
     private IEnumerator ChangeValue(float targetValue)
@@ -48,5 +29,13 @@ public class SmoothHealthBar : MonoBehaviour
         }
 
         _isValueChanging = false;
+    }
+
+    protected override void UpdateHealth(float currentHealth, float maxHealth)
+    {
+        if (_isValueChanging)
+            StopCoroutine(_valueChanger);
+
+        _valueChanger = StartCoroutine(ChangeValue(currentHealth / maxHealth));
     }
 }

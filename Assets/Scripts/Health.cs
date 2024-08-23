@@ -3,21 +3,21 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    [SerializeField] private float _maxHealth;
+    [SerializeField] private float _max;
 
-    public event Action HealthChanged;
+    public event Action Changed;
 
-    public float CurrentHealth { get; private set; }
-    public float MaxHealth { get { return _maxHealth; } }
+    public float Current { get; private set; }
+    public float Max { get { return _max; } }
 
     private void Awake()
     {
-        CurrentHealth = _maxHealth; 
+        Current = _max; 
     }
 
     private void OnEnable()
     {
-        HealthChanged?.Invoke();
+        Changed?.Invoke();
     }
 
     public void TakeDamage(float damage)
@@ -25,12 +25,12 @@ public class Health : MonoBehaviour
         if (damage < 0)
             throw new ArgumentOutOfRangeException(nameof(damage));
 
-        CurrentHealth -= damage;
+        Current -= damage;
 
-        if(CurrentHealth < 0)
-            CurrentHealth = 0;
+        if(Current < 0)
+            Current = 0;
 
-        HealthChanged?.Invoke();
+        Changed?.Invoke();
     }
 
     public void TakeHeal(float heal)
@@ -38,11 +38,11 @@ public class Health : MonoBehaviour
         if (heal < 0)
             throw new ArgumentOutOfRangeException(nameof(heal));
 
-        CurrentHealth += heal;
+        Current += heal;
 
-        if(CurrentHealth > _maxHealth)
-            CurrentHealth = _maxHealth;
+        if(Current > _max)
+            Current = _max;
 
-        HealthChanged?.Invoke();
+        Changed?.Invoke();
     }
 }
